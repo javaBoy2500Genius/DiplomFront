@@ -1,18 +1,19 @@
-import Image from 'next/image'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+"use client";
+
+import ConversionChart from '@/components/Dashboard/ConversionChart';
+import TrafficChart from '@/components/Dashboard/TrafficChart';
+import UserChart from '@/components/Dashboard/UserChart';
 import {
   faArrowDown,
   faArrowUp,
-  faDownload,
   faEllipsisVertical,
-  faMars,
-  faSearch,
-  faUsers,
-  faVenus,
-} from '@fortawesome/free-solid-svg-icons'
+  faUsers
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Image from 'next/image';
+import { useState } from 'react';
 import {
   Button,
-  ButtonGroup,
   Card,
   CardBody,
   CardFooter,
@@ -21,28 +22,73 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownToggle,
-  ProgressBar,
-} from 'react-bootstrap'
-import {
-  faCcAmex,
-  faCcApplePay,
-  faCcPaypal,
-  faCcStripe,
-  faCcVisa,
-  faFacebookF,
-  faLinkedinIn,
-  faTwitter,
-} from '@fortawesome/free-brands-svg-icons'
-import React from 'react'
-import UserChart from '@/components/Dashboard/UserChart'
-import IncomeChart from '@/components/Dashboard/IncomeChart'
-import ConversionChart from '@/components/Dashboard/ConversionChart'
-import SessionChart from '@/components/Dashboard/SessionChart'
-import TrafficChart from '@/components/Dashboard/TrafficChart'
+ 
+} from 'react-bootstrap';
+import FileSelect from '../ui/dashboard/FileSelect';
+import { ResponsiveDialog } from '../ui/dashboard/ResponsiveDialog';
+import { checkToken } from '../service/help'
+import { useRouter } from 'next/navigation'
+import { useEffect } from 'react';
+import exp from 'constants';
+import Constants from '@/models/constant/constant';
+import Header from '@/app/ui/dashboard/Header/Header'
+import axios from 'axios';
 
 export default function Page() {
+  const [open, setOpen] = useState(false);
+  const [file, setFile] = useState<File | null>();
+  const router = useRouter()
+  useEffect(() => {
+    if (!checkToken()) {
+      router.push('/login')
+    }
+   
+  }, []); 
+
+ 
+
+  const handleFileChange = (file: File) => {
+    console.log(file)
+   
+    setFile(file);
+  };
+
+  const handleSave = async () => {
+    console.log(file);
+    if (!file) {
+      console.error('No file selected');
+    
+      return;
+    }
+
+    const formData = new FormData();
+    
+    formData.append('pcapFile',file,'filename' );
+    console.log(file.name)
+    await axios.post(`${Constants.API_URL}${Constants.API_ANALYZE}?senderCount=10`,
+      formData,{
+        headers: {
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache',
+          'Expires': '0',
+          'Content-Type': 'multipart/form-data',
+          'Authorization': `${Constants.TOKEN_SHM} ${localStorage.getItem(Constants.TOKEN_KEY) }`,
+        },
+      
+      }
+     ).then(res => {
+      console.log(`succes${res.data}`)
+    }).catch(err => {
+      console.log(`error ${err}`)
+    })
+    console.log("end")
+    return
+    setOpen(false);
+  };
+
   return (
     <>
+      <Header fileUploadClick={() => setOpen(true)} />
       <div className="row">
         <div className="col-sm-6 col-lg-3">
           <Card bg="primary" text="white" className="mb-4">
@@ -81,7 +127,7 @@ export default function Page() {
           </Card>
         </div>
 
-       
+
         <div className="col-sm-6 col-lg-3">
           <Card bg="warning" text="white" className="mb-4">
             <CardBody className="pb-0 d-flex justify-content-between align-items-start">
@@ -119,7 +165,7 @@ export default function Page() {
           </Card>
         </div>
 
-       
+
       </div>
 
       <Card className="mb-4">
@@ -127,9 +173,9 @@ export default function Page() {
           <div className="d-flex justify-content-between">
             <div>
               <h4 className="mb-0">Трафик</h4>
-            
+
             </div>
-         
+
           </div>
           <div
             style={{
@@ -145,32 +191,20 @@ export default function Page() {
             <div className="col mb-sm-2 mb-0">
               <div className="text-black-50">Попытки DDOS</div>
               <div className="fw-semibold">29.703 пользователей  (40%)</div>
-              <ProgressBar
-                className="progress-thin mt-2"
-                variant="success"
-                now={40}
-              />
+             
             </div>
             <div className="col mb-sm-2 mb-0">
               <div className="text-black-50">Разблокированно пользователей</div>
               <div className="fw-semibold">24.093 пользователей (20%)</div>
-              <ProgressBar
-                className="progress-thin mt-2"
-                variant="info"
-                now={20}
-              />
+          
             </div>
-         
+
             <div className="col mb-sm-2 mb-0 ">
               <div className="text-black-50">Заблокированно пользователей </div>
               <div className="fw-semibold">22.123 пользователей (80%)</div>
-              <ProgressBar
-                className="progress-thin mt-2"
-                variant="danger"
-                now={80}
-              />
+            
             </div>
-           
+
           </div>
         </CardFooter>
       </Card>
@@ -183,7 +217,7 @@ export default function Page() {
               Доска почета
             </CardHeader>
             <CardBody>
-            
+
 
               <br />
 
@@ -195,8 +229,8 @@ export default function Page() {
                         <FontAwesomeIcon icon={faUsers} fixedWidth />
                       </th>
                       <th>Пользователь</th>
-              
-                     
+
+
                       <th>Активность DDOS</th>
                       <th aria-label="Action" />
                     </tr>
@@ -225,8 +259,8 @@ export default function Page() {
                           | Registered: Jan 1, 2020
                         </div>
                       </td>
-                  
-                     
+
+
                       <td>
                         <div className="small text-black-50">Last login</div>
                         <div className="fw-semibold">10 sec ago</div>
@@ -243,13 +277,13 @@ export default function Page() {
                           </DropdownToggle>
 
                           <DropdownMenu>
-                             
-                          
+
+
                             <DropdownItem
                               className="text-danger"
                               href="#/action-3"
                             >
-                               Удалить
+                              Удалить
                             </DropdownItem>
                           </DropdownMenu>
                         </Dropdown>
@@ -278,8 +312,8 @@ export default function Page() {
                           | Registered: Jan 1, 2020
                         </div>
                       </td>
-              
-                     
+
+
                       <td>
                         <div className="small text-black-50">Last login</div>
                         <div className="fw-semibold">5 minutes ago</div>
@@ -296,13 +330,13 @@ export default function Page() {
                           </DropdownToggle>
 
                           <DropdownMenu>
-                             
-                          
+
+
                             <DropdownItem
                               className="text-danger"
                               href="#/action-3"
                             >
-                               Удалить
+                              Удалить
                             </DropdownItem>
                           </DropdownMenu>
                         </Dropdown>
@@ -331,8 +365,8 @@ export default function Page() {
                           | Registered: Jan 1, 2020
                         </div>
                       </td>
-                    
-                     
+
+
                       <td>
                         <div className="small text-black-50">Last login</div>
                         <div className="fw-semibold">1 hour ago</div>
@@ -349,13 +383,13 @@ export default function Page() {
                           </DropdownToggle>
 
                           <DropdownMenu>
-                             
-                          
+
+
                             <DropdownItem
                               className="text-danger"
                               href="#/action-3"
                             >
-                               Удалить
+                              Удалить
                             </DropdownItem>
                           </DropdownMenu>
                         </Dropdown>
@@ -384,8 +418,8 @@ export default function Page() {
                           | Registered: Jan 1, 2020
                         </div>
                       </td>
-                      
-                     
+
+
                       <td>
                         <div className="small text-black-50">Last login</div>
                         <div className="fw-semibold">Last month</div>
@@ -402,13 +436,13 @@ export default function Page() {
                           </DropdownToggle>
 
                           <DropdownMenu>
-                             
-                          
+
+
                             <DropdownItem
                               className="text-danger"
                               href="#/action-3"
                             >
-                               Удалить
+                              Удалить
                             </DropdownItem>
                           </DropdownMenu>
                         </Dropdown>
@@ -437,8 +471,8 @@ export default function Page() {
                           | Registered: Jan 1, 2020
                         </div>
                       </td>
-                   
-                     
+
+
                       <td>
                         <div className="small text-black-50">Last login</div>
                         <div className="fw-semibold">Last week</div>
@@ -455,13 +489,13 @@ export default function Page() {
                           </DropdownToggle>
 
                           <DropdownMenu>
-                             
-                          
+
+
                             <DropdownItem
                               className="text-danger"
                               href="#/action-3"
                             >
-                               Удалить
+                              Удалить
                             </DropdownItem>
                           </DropdownMenu>
                         </Dropdown>
@@ -490,8 +524,8 @@ export default function Page() {
                           | Registered: Jan 1, 2020
                         </div>
                       </td>
-                 
-                     
+
+
                       <td>
                         <div className="small text-black-50">Last login</div>
                         <div className="fw-semibold">Yesterday</div>
@@ -508,13 +542,13 @@ export default function Page() {
                           </DropdownToggle>
 
                           <DropdownMenu>
-                             
-                          
+
+
                             <DropdownItem
                               className="text-danger"
                               href="#/action-3"
                             >
-                               Удалить
+                              Удалить
                             </DropdownItem>
                           </DropdownMenu>
                         </Dropdown>
@@ -526,6 +560,10 @@ export default function Page() {
             </CardBody>
           </Card>
         </div>
+        <ResponsiveDialog open={open} setOpen={setOpen} title="Загрузить файл" >
+          <FileSelect onChange={handleFileChange} />
+          <Button onClick={handleSave}>Сохранить</Button>
+           </ResponsiveDialog>
       </div>
     </>
   )

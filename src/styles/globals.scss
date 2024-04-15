@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 $enable-negative-margins: true;
 
 @import "~bootstrap/scss/bootstrap";
@@ -11,3 +15,15 @@ $enable-negative-margins: true;
 @import "~nprogress/nprogress.css";
 
 @import "_custom";
+
+
+
+.dropdown-item.active,
+.dropdown-item:active {
+    background-color: transparent !important; 
+    /* Убираем фон при активном состоянии */
+    color: inherit !important;
+    /* Используем цвет текста по умолчанию */
+    text-decoration: none !important;
+    /* Убираем подчеркивание */
+}

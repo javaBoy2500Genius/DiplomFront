@@ -20,8 +20,8 @@ export default function Layout({
       </Sidebar>
 
       <div className="wrapper d-flex flex-column min-vh-100 bg-light">
-        <Header />
-
+    
+      
         <div className="body flex-grow-1 px-sm-2 mb-4">
           <Container fluid="lg">
             {children}

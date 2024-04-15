@@ -12,40 +12,65 @@ import { deleteCookie, getCookie } from 'cookies-next'
 import axios from 'axios'
 import Link from 'next/link'
 import InputGroupText from 'react-bootstrap/InputGroupText'
+import Constants from '@/models/constant/constant'
 
 export default function Login() {
   const router = useRouter()
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
 
-  const getRedirect = () => {
-    const redirect = getCookie('redirect')
-    if (redirect) {
-      deleteCookie('redirect')
-      return redirect.toString()
-    }
 
-    return '/'
+
+  interface ILoginResponse {
+    
+    accessToken: string
+   // RefreshToken: string
   }
-
   const login = async (e: SyntheticEvent) => {
+    
+    try {
     e.stopPropagation()
     e.preventDefault()
 
     setSubmitting(true)
+    
+    const formData= new FormData(e.target as HTMLFormElement)
+    const username=formData.get('username')
+    const passwd = formData.get('password')
 
-    try {
-      const res = await axios.post('api/mock/login')
-      if (res.status === 200) {
-        router.push(getRedirect())
-      }
-    } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message)
-      }
-    } finally {
-      setSubmitting(false)
+    if(!username || !passwd){
+      setError('Заполните все поля')
+      return
     }
+      
+     await axios.post<ILoginResponse>(`${Constants.API_URL}${Constants.API_LOGIN}`,
+      {
+        headers: {
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache',
+          'Expires': '0',
+        },
+        
+          "login":username,
+          "password":passwd
+        
+      }
+    ).then(res=>{
+      if(!res.data.accessToken){
+        throw 'Empty access token'
+      }
+      localStorage.setItem(Constants.TOKEN_KEY, res.data.accessToken);
+      router.push('/')
+      }).catch(err=>{
+        console.error(err)
+        setError("Неверное имя пользователя или пароль")
+      })
+     
+    }finally
+    {
+    setSubmitting(false)
+  }
+   
   }
 
   return (
@@ -70,9 +95,8 @@ export default function Login() {
             name="username"
             required
             disabled={submitting}
-            placeholder="Username"
-            aria-label="Username"
-            defaultValue="Username"
+            placeholder="Email"
+            aria-label="Email"
           />
         </InputGroup>
 
@@ -90,7 +114,6 @@ export default function Login() {
             disabled={submitting}
             placeholder="Password"
             aria-label="Password"
-            defaultValue="Password"
           />
         </InputGroup>
 
@@ -102,13 +125,13 @@ export default function Login() {
               type="submit"
               disabled={submitting}
             >
-              Login
+              Войти
             </Button>
           </Col>
           <Col xs={6} className="text-end">
             <Link className="px-0" href="#">
-              Forgot
-              password?
+              Забыли
+              пароль?
             </Link>
           </Col>
         </Row>

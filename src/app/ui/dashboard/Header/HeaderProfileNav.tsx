@@ -36,13 +36,18 @@ const ItemWithIcon = (props: ItemWithIconProps) => {
 
   return (
     <>
-      <FontAwesomeIcon className="me-2" icon={icon} fixedWidth />
+      <FontAwesomeIcon className="me-2" icon={icon} fixedWidth  />
       {children}
     </>
   )
 }
+export interface IHeaderProfileNavProps {
 
-export default function HeaderProfileNav() {
+
+  fileUploadClick: () => void;
+
+}
+export default function HeaderProfileNav({ fileUploadClick }: IHeaderProfileNavProps){
   return (
     <Nav>
       <Dropdown as={NavItem}>
@@ -60,13 +65,13 @@ export default function HeaderProfileNav() {
         <DropdownMenu className="pt-0">
 
           <Link href="#" passHref legacyBehavior>
-            <DropdownItem>
-              <ItemWithIcon icon={faLock}>Закрыть</ItemWithIcon>
+            <DropdownItem onClick={fileUploadClick} >
+              <ItemWithIcon  icon={faFile}>Загрузить файл</ItemWithIcon>
             </DropdownItem>
           </Link>
           <HeaderLogout>
             <DropdownItem>
-              <ItemWithIcon icon={faPowerOff}>Выход</ItemWithIcon>
+              <ItemWithIcon icon={faPowerOff} >Выход</ItemWithIcon>
             </DropdownItem>
           </HeaderLogout>
         </DropdownMenu>

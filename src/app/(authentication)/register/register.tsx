@@ -11,7 +11,8 @@ import { SyntheticEvent, useState } from 'react'
 import { deleteCookie, getCookie } from 'cookies-next'
 import axios from 'axios'
 import InputGroupText from 'react-bootstrap/InputGroupText'
-
+import Constants  from '@/models/constant/constant'
+import { serializeCookie } from '@/lib/cookie'
 export default function Register() {
   const router = useRouter()
   const [submitting, setSubmitting] = useState(false)
@@ -28,20 +29,47 @@ export default function Register() {
   }
 
   const register = async (e: SyntheticEvent) => {
-    e.stopPropagation()
-    e.preventDefault()
-
-    setSubmitting(true)
-
     try {
-      const res = await axios.post('api/mock/login')
-      if (res.status === 200) {
-        router.push(getRedirect())
+      e.stopPropagation()
+      e.preventDefault()
+
+      setSubmitting(true)
+
+      const formData = new FormData(e.target as HTMLFormElement)
+      const username = formData.get('username')
+      const passwd = formData.get('password')
+      const password_repeat = formData.get('password_repeat')
+
+      if (!username || !passwd || !password_repeat) {
+        setError('Заполните все поля')
+        return
       }
-    } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message)
+
+      if(password_repeat!=passwd){
+        setError("Пароли не совпадают")
+        return
       }
+    
+      
+      await axios.post(`${Constants.API_URL}${Constants.API_REGISTER}`,
+        {
+          headers: {
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache',
+            'Expires': '0',
+          },
+          
+            "login": username,
+            "password": passwd
+          
+        }
+      ).then(res => {
+        console.log(res.data)
+      }).catch(err => {
+        console.log(err)
+        setError("Ошибка, попробуйте позже")
+      })
+
     } finally {
       setSubmitting(false)
     }
@@ -51,16 +79,7 @@ export default function Register() {
     <>
       <Alert variant="danger" show={error !== ''} onClose={() => setError('')} dismissible>{error}</Alert>
       <Form onSubmit={register}>
-        <InputGroup className="mb-3">
-          <InputGroupText><FontAwesomeIcon icon={faUser} fixedWidth /></InputGroupText>
-          <FormControl
-            name="username"
-            required
-            disabled={submitting}
-            placeholder="Username"
-            aria-label="Username"
-          />
-        </InputGroup>
+       
 
         <InputGroup className="mb-3">
           <InputGroupText>
@@ -68,7 +87,7 @@ export default function Register() {
           </InputGroupText>
           <FormControl
             type="email"
-            name="email"
+            name="username"
             required
             disabled={submitting}
             placeholder="Email"
@@ -83,7 +102,7 @@ export default function Register() {
             name="password"
             required
             disabled={submitting}
-            placeholder="Password"
+            placeholder="Пароль"
             aria-label="Password"
           />
         </InputGroup>
@@ -95,13 +114,13 @@ export default function Register() {
             name="password_repeat"
             required
             disabled={submitting}
-            placeholder="Repeat password"
+            placeholder="Повторите пароль"
             aria-label="Repeat password"
           />
         </InputGroup>
 
         <Button type="submit" className="d-block w-100" disabled={submitting} variant="success">
-          Create Account
+         Зарегистрироваться
         </Button>
       </Form>
     </>

@@ -11,6 +11,9 @@ import { useRouter } from 'next/navigation'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import PokemonList from '@/components/Pokemon/PokemonList'
+import { useEffect } from 'react';
+
+import { checkToken } from '@/app/service/help'
 export type Props = {
   props: {
     pokemonResource: Resource<Pokemon>;
@@ -33,7 +36,12 @@ export default function Index(props: Props) {
   } = props
 
   const router = useRouter()
+  useEffect(() => {
+    if (!checkToken()) {
+      router.push('/login')
+    }
 
+  }, []); 
   const pokemonListURL = `${process.env.NEXT_PUBLIC_POKEMON_LIST_API_BASE_URL}pokemons` || ''
 
   // swr: data -> axios: data -> resource: data
