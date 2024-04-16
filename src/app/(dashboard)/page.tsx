@@ -27,6 +27,7 @@ import {
 import FileSelect from '../ui/dashboard/FileSelect';
 import { ResponsiveDialog } from '../ui/dashboard/ResponsiveDialog';
 import { checkToken } from '../service/help'
+import { getToken } from '../service/help'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react';
 import exp from 'constants';
@@ -64,7 +65,6 @@ export default function Page() {
     const formData = new FormData();
     
     formData.append('pcapFile',file,'filename' );
-    console.log(file.name)
     await axios.post(`${Constants.API_URL}${Constants.API_ANALYZE}?senderCount=10`,
       formData,{
         headers: {
@@ -72,7 +72,7 @@ export default function Page() {
           'Pragma': 'no-cache',
           'Expires': '0',
           'Content-Type': 'multipart/form-data',
-          'Authorization': `${Constants.TOKEN_SHM} ${localStorage.getItem(Constants.TOKEN_KEY) }`,
+          'Authorization': `${Constants.TOKEN_SHM} ${getToken()}`,
         },
       
       }
@@ -82,7 +82,7 @@ export default function Page() {
       console.log(`error ${err}`)
     })
     console.log("end")
-    return
+//    return
     setOpen(false);
   };
 
