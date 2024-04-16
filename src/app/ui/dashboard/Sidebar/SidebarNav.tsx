@@ -34,7 +34,7 @@ export default function SidebarNav() {
         Панель управление
         <small className="ms-auto"></small>
       </SidebarNavItem>
-      <SidebarNavItem icon={faCode} href="/pokemons">
+      <SidebarNavItem icon={faCode} href="/logs">
         Панель
         <small className="ms-auto"></small>
       </SidebarNavItem>

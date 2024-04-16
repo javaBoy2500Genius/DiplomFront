@@ -1,8 +1,7 @@
-import React from 'react'
+import Index, { Props } from '@/app/(dashboard)/logs/index'
+import { Logs } from '@/models/log'
 import { newResource, Resource } from '@/models/resource'
-import { Pokemon } from '@/models/pokemon'
 import { SearchParams } from '@/types/next'
-import Index, { Props } from '@/app/(dashboard)/pokemons/index'
 
 const fetchPokemons = async (searchParams: SearchParams): Promise<Props['props']> => {
   const logListURL = `${process.env.NEXT_PUBLIC_POKEMON_LIST_API_BASE_URL}pokemons` || ''
@@ -35,10 +34,10 @@ const fetchPokemons = async (searchParams: SearchParams): Promise<Props['props']
   const res = await fetch(url, {
     method: 'GET',
   })
-  const pokemon: Pokemon[] = await res.json()
+  const pokemon: Logs[] = await res.json()
 
   const total = parseInt(res.headers.get('x-total-count') ?? '0', 10)
-  const pokemonResource: Resource<Pokemon> = newResource(pokemon, total, page, perPage)
+  const pokemonResource: Resource<Logs> = newResource(pokemon, total, page, perPage)
 
   return {
     pokemonResource,

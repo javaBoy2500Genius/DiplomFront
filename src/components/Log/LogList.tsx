@@ -1,22 +1,19 @@
+import THSort from '@/components/TableSort/THSort'
+import { Logs } from '@/models/log'
+import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Table,
 } from 'react-bootstrap'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons'
-import React from 'react'
-import Image from 'next/image'
-import Link from 'next/link'
-import { Pokemon } from '@/models/pokemon'
-import THSort from '@/components/TableSort/THSort'
 
 
 type Props = {
-  pokemons?: Pokemon[];
+  logs?: Logs[];
 } & Pick<Parameters<typeof THSort>[0], 'setSort' | 'setOrder'>
 
-export default function PokemonList(props: Props) {
-  const { pokemons, setSort, setOrder } = props
-  if (!pokemons) {
+export default function LogList(props: Props) {
+  const { logs: logs, setSort, setOrder } = props
+  if (!logs) {
     return null; // or <div>Loading...</div> or any other loading indicator
   }
   return (
@@ -24,11 +21,11 @@ export default function PokemonList(props: Props) {
       <thead className="bg-light">
 
         <tr>
-          
-       
+
+
           <th><THSort name="name" setSort={setSort} setOrder={setOrder}>Имя пользователя</THSort></th>
-        
-          
+
+
           <th className="text-end"><THSort name="hp" setSort={setSort} setOrder={setOrder}>Ip пользователя</THSort></th>
           <th className="text-end"><THSort name="attack" setSort={setSort} setOrder={setOrder}>Дата создания</THSort></th>
           <th className="text-end"><THSort name="defense" setSort={setSort} setOrder={setOrder}>Подозрение на DDOS</THSort></th>
@@ -37,13 +34,13 @@ export default function PokemonList(props: Props) {
         </tr>
       </thead>
       <tbody>
-        {pokemons.map((pokemon) => (
+        {logs.map((pokemon) => (
           <tr key={pokemon.id}>
-            
-          
+
+
             <td>{pokemon.name}</td>
-           
-           
+
+
             <td className="text-end">{pokemon.hp}</td>
             <td className="text-end">{pokemon.attack}</td>
             <td className="text-end">{pokemon.defense}%</td>
@@ -60,7 +57,7 @@ export default function PokemonList(props: Props) {
                 </DropdownToggle>
 
                 <DropdownMenu>
-                 
+
                   <DropdownItem
                     className="text-danger"
                     href="#/action-3"
