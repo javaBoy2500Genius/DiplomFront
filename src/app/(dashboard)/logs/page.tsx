@@ -34,13 +34,14 @@ const fetchPokemons = async (searchParams: SearchParams): Promise<Props['props']
   const res = await fetch(url, {
     method: 'GET',
   })
-  const pokemon: Logs[] = await res.json()
-
+  const log: Logs[] = await res.json()
+  console.log("123")
   const total = parseInt(res.headers.get('x-total-count') ?? '0', 10)
-  const pokemonResource: Resource<Logs> = newResource(pokemon, total, page, perPage)
+  console.log(total)
+  const logResource: Resource<Logs> = newResource(log, total, page, perPage)
 
   return {
-    pokemonResource,
+    logResource: logResource,
     page,
     perPage,
     sort,

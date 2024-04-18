@@ -23,35 +23,35 @@ export default function LogList(props: Props) {
         <tr>
 
 
-          <th><THSort name="name" setSort={setSort} setOrder={setOrder}>Имя пользователя</THSort></th>
+          <th><THSort name="RequestCount" setSort={setSort} setOrder={setOrder}>Количество запросов</THSort></th>
 
 
-          <th className="text-end"><THSort name="hp" setSort={setSort} setOrder={setOrder}>Ip пользователя</THSort></th>
-          <th className="text-end"><THSort name="attack" setSort={setSort} setOrder={setOrder}>Дата создания</THSort></th>
-          <th className="text-end"><THSort name="defense" setSort={setSort} setOrder={setOrder}>Подозрение на DDOS</THSort></th>
+          <th className="text-end"><THSort name="Ip" setSort={setSort} setOrder={setOrder}>Ip</THSort></th>
+          <th className="text-end"><THSort name="CreatedAt" setSort={setSort} setOrder={setOrder}>Дата создания</THSort></th>
+          <th className="text-end"><THSort name="DdosProbability" setSort={setSort} setOrder={setOrder}>Подозрение на DDOS</THSort></th>
 
           <th aria-label="Action" />
         </tr>
       </thead>
       <tbody>
-        {logs.map((pokemon) => (
-          <tr key={pokemon.id}>
+        {logs?.map((log) => (
+          <tr key={log.id}>
 
 
-            <td>{pokemon.name}</td>
+            <td>{log.request_count}</td>
 
 
-            <td className="text-end">{pokemon.hp}</td>
-            <td className="text-end">{pokemon.attack}</td>
-            <td className="text-end">{pokemon.defense}%</td>
+            <td className="text-end">{log.ip}</td>
+            <td className="text-end">{log.createdAtString}</td>
+            <td className="text-end">{new Intl.NumberFormat('en-us', { minimumFractionDigits: 2 }).format(log.ddos_probability * 100) }%</td>
 
-            <td>
+            {/* <td>
               <Dropdown align="end">
                 <DropdownToggle
                   as="button"
                   bsPrefix="btn"
                   className="btn-link rounded-0 text-black-50 shadow-none p-0"
-                  id={`action-${pokemon.id}`}
+                  id={`action-${log.id}`}
                 >
                   <FontAwesomeIcon fixedWidth icon={faEllipsisVertical} />
                 </DropdownToggle>
@@ -66,7 +66,7 @@ export default function LogList(props: Props) {
                   </DropdownItem>
                 </DropdownMenu>
               </Dropdown>
-            </td>
+            </td> */}
           </tr>
         ))}
       </tbody>

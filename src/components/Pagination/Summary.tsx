@@ -19,11 +19,11 @@ export default function Summary(props: Props) {
       {' '}
       <span className="fw-semibold">{to}</span>
       {' '}
-      для
+      {/* для
       {' '}
       <span className="fw-semibold">{total}</span>
       {' '}
-      элемента(ов)
+      элемента(ов) */}
     </div>
   )
 }

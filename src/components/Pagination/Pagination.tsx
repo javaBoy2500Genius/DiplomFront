@@ -26,7 +26,7 @@ export default function Pagination(props: Props) {
 
   return (
     <div className="row align-items-center justify-content-center">
-      <Summary from={from} to={to} total={total} />
+      <Summary from={from} to={to} total={10} />
       <RowsPerPage perPage={perPage} setPerPage={setPerPage} />
       <Paginate currentPage={currentPage} lastPage={lastPage} setPage={setPage} />
     </div>

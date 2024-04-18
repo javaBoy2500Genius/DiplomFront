@@ -1,19 +1,20 @@
+
+
 export interface Logs {
-  id: number;
-  identifier: string;
-  pokemondb_identifier: string;
-  name: string;
-  hp: number;
-  attack: number;
-  defense: number;
-  special_attack: number;
-  special_defense: number;
-  speed: number;
-  total: number;
+  id: number
+  ip: string
+  created_at: string
+  ddos_probability: number
+  intent_status: number,
+  request_count:number,
+  createdAtString:string,
+
 }
 
-
-
+export interface Res{
+  count:number,
+  result:Logs[]
+}
 
 
 

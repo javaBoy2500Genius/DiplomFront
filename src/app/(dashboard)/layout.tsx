@@ -4,7 +4,7 @@ import SidebarProvider from '@/app/ui/dashboard/sidebar-provider'
 import SidebarOverlay from '@/app/ui/dashboard/Sidebar/SidebarOverlay'
 import Sidebar from '@/app/ui/dashboard/Sidebar/Sidebar'
 import SidebarNav from '@/app/ui/dashboard/Sidebar/SidebarNav'
-import Header from '@/app/ui/dashboard/Header/Header'
+
 import Footer from '@/app/ui/dashboard/Footer/Footer'
 
 export default function Layout({
