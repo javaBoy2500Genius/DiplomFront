@@ -210,7 +210,7 @@ export default function Page() {
       </Card>
 
 
-      <div className="row">
+      {/* <div className="row">
         <div className="col-md-12">
           <Card>
             <CardHeader className='text-center'>
@@ -564,7 +564,7 @@ export default function Page() {
           <FileSelect onChange={handleFileChange} />
           <Button onClick={handleSave}>Сохранить</Button>
            </ResponsiveDialog>
-      </div>
+      </div> */}
     </>
   )
 }

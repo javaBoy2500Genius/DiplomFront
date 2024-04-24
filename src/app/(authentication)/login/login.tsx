@@ -43,25 +43,25 @@ export default function Login() {
       return
     }
       
-     await axios.post<ILoginResponse>(`${Constants.API_URL}${Constants.API_LOGIN}`,
-      {
-        headers: {
-          'Cache-Control': 'no-cache',
-          'Pragma': 'no-cache',
-          'Expires': '0',
-        },
-        
-          "login":username,
-          "password":passwd
-        
-      }
-    ).then(res=>{
-      if(!res.data.accessToken){
-        throw 'Empty access token'
-      }
-      localStorage.setItem(Constants.TOKEN_KEY, res.data.accessToken);
-      router.push('/')
-      }).catch(err=>{
+      await axios.post<ILoginResponse>(`${Constants.API_URL}${Constants.API_LOGIN}`,
+        {
+          headers: {
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache',
+            'Expires': '0',
+          },
+
+          "login": username,
+          "password": passwd
+
+        }
+      ).then(res => {
+        if (!res.data.accessToken) {
+          throw 'Empty access token'
+        }
+        localStorage.setItem(Constants.TOKEN_KEY, res.data.accessToken);
+        router.push('/')
+      }).catch(err => {
         console.error(err)
         setError("Неверное имя пользователя или пароль")
       })

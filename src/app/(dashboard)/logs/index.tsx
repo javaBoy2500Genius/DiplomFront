@@ -62,7 +62,10 @@ export default function Index(props: Props) {
       'Content-Type': 'application/json',
       'Authorization': `${Constants.TOKEN_SHM} ${getToken()}`,
     },
-   
+    transformResponse: transformResponseWrapper((d: Logs[], h) => {
+      const total = h ? parseInt(h['x-total-count'], 10) : 0
+      return newResource(d, total, page, perPage)
+    }),
   }, {
     data: logResource,
     headers: {
@@ -76,8 +79,8 @@ export default function Index(props: Props) {
   console.log("start")
   console.log(resource.meta)
   console.log(logResource.meta.total.toString( ))
-
-  console.log((resource.data as any).result);
+console.log("start 123")
+  console.log((resource.data));
 
   return (
     <Card>
@@ -97,3 +100,10 @@ export default function Index(props: Props) {
     </Card>
   )
 }
+
+
+
+
+
+
+  
