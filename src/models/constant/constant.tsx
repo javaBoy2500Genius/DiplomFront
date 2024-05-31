@@ -7,7 +7,8 @@ export default class Constants {
     static API_LOGIN = '/auth/login';
     static API_REGISTER = '/auth/register';
     static API_ANALYZE = '/analyze';
-    static API_LOGS = '/logs';
+    static API_LOGS = '/logs'; 
+    
 
     static TOKEN_SHM = "Bearer"
     static TOKEN_KEY = 'TOKEN'
