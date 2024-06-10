@@ -2,7 +2,7 @@ export default class Constants {
 
     static APP_SHM = "http"
     static APP_PORT = '8080'
-    static APP_URL = '192.168.0.162';
+    static APP_URL = 'ddos_detector_api';
     static API_URL = `${this.APP_SHM}://${this.APP_URL}:${this.APP_PORT}/api`;
     static API_LOGIN = '/auth/login';
     static API_REGISTER = '/auth/register';
