@@ -64,11 +64,11 @@ export default function HeaderProfileNav({ fileUploadClick }: IHeaderProfileNavP
         </DropdownToggle>
         <DropdownMenu className="pt-0">
 
-          <Link href="#" passHref legacyBehavior>
+        
             <DropdownItem onClick={fileUploadClick} >
               <ItemWithIcon  icon={faFile}>Загрузить файл</ItemWithIcon>
             </DropdownItem>
-          </Link>
+          
           <HeaderLogout>
             <DropdownItem>
               <ItemWithIcon icon={faPowerOff} >Выход</ItemWithIcon>

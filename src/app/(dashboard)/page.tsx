@@ -22,7 +22,7 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownToggle,
- 
+
 } from 'react-bootstrap';
 import FileSelect from '../ui/dashboard/FileSelect';
 import { ResponsiveDialog } from '../ui/dashboard/ResponsiveDialog';
@@ -34,23 +34,56 @@ import exp from 'constants';
 import Constants from '@/models/constant/constant';
 import Header from '@/app/ui/dashboard/Header/Header'
 import axios from 'axios';
-
+import { UserLogsWeek } from '@/models/log';
 export default function Page() {
   const [open, setOpen] = useState(false);
   const [file, setFile] = useState<File | null>();
+  const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
+  const [data, setData] = useState<UserLogsWeek[]>([]);
+
   const router = useRouter()
   useEffect(() => {
     if (!checkToken()) {
       router.push('/login')
     }
-   
-  }, []); 
 
- 
+
+    axios.get<UserLogsWeek[]>(`${Constants.API_URL}${Constants.API_REPORT_LOGS_USER_WEEKLY}`,
+      {
+        params: {
+
+
+          "$skip": 0,
+          "$take": 100,
+        },
+        headers: {
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache',
+          'Expires': '0',
+          'Authorization': `${Constants.TOKEN_SHM} ${getToken()}`
+        },
+
+
+      }
+    ).then(res => {
+      if (!res.data) {
+        throw 'Empty access token'
+      }
+      setData(res.data)
+    }).catch(err => {
+      console.error(err)
+
+    })
+
+
+
+  }, []);
+
+
 
   const handleFileChange = (file: File) => {
     console.log(file)
-   
+
     setFile(file);
   };
 
@@ -58,31 +91,32 @@ export default function Page() {
     console.log(file);
     if (!file) {
       console.error('No file selected');
-    
+      setErrorMessage('No file selected');
+      alert("файл не выбран")
       return;
     }
 
     const formData = new FormData();
-    
-    formData.append('pcapFile',file,'filename' );
-    await axios.post(`${Constants.API_URL}${Constants.API_ANALYZE}?senderCount=10`,
-      formData,{
-        headers: {
-          'Cache-Control': 'no-cache',
-          'Pragma': 'no-cache',
-          'Expires': '0',
-          'Content-Type': 'multipart/form-data',
-          'Authorization': `${Constants.TOKEN_SHM} ${getToken()}`,
-        },
-      
-      }
-     ).then(res => {
+
+    formData.append('pcapFile', file, 'filename');
+    await axios.post(`${Constants.API_URL}${Constants.API_ANALYZE}?senderCount=1000`,
+      formData, {
+      headers: {
+        'Cache-Control': 'no-cache',
+        'Pragma': 'no-cache',
+        'Expires': '0',
+        'Content-Type': 'multipart/form-data',
+        'Authorization': `${Constants.TOKEN_SHM} ${getToken()}`,
+      },
+
+    }
+    ).then(res => {
       console.log(`succes${res.data}`)
     }).catch(err => {
       console.log(`error ${err}`)
     })
     console.log("end")
-//    return
+    //    return
     setOpen(false);
   };
 
@@ -91,7 +125,7 @@ export default function Page() {
       <Header fileUploadClick={() => setOpen(true)} />
       <div className="row">
         <div className="col-sm-6 col-lg-3">
-          <Card bg="primary" text="white" className="mb-4">
+          {/* <Card bg="primary" text="white" className="mb-4">
             <CardBody className="pb-0 d-flex justify-content-between align-items-start">
               <div>
                 <div className="fs-4 fw-semibold">
@@ -124,51 +158,44 @@ export default function Page() {
             <div className="mt-3 mx-3" style={{ height: '70px' }}>
               <UserChart />
             </div>
-          </Card>
+          </Card> */}
         </div>
 
-
-        <div className="col-sm-6 col-lg-3">
-          <Card bg="warning" text="white" className="mb-4">
-            <CardBody className="pb-0 d-flex justify-content-between align-items-start">
-              <div>
-                <div className="fs-4 fw-semibold">
-                  2.49%
-                  <span className="fs-6 ms-2 fw-normal">
-                    (84.7%
-                    <FontAwesomeIcon icon={faArrowUp} fixedWidth />
-                    )
-                  </span>
+        <div style={{ display: 'flex', justifyContent: 'center', height: '100%' }}>
+          <div className="col-sm-7 col-lg-4">
+            <Card bg="warning" text="white" className="mb-4">
+              <CardBody className="pb-0 d-flex justify-content-between align-items-start">
+                <div>
+                  <div className="fs-4 fw-semibold">
+                    2.49%
+                    <span className="fs-6 ms-2 fw-normal">
+                      (84.7%
+                      <FontAwesomeIcon icon={faArrowUp} fixedWidth />
+                      )
+                    </span>
+                  </div>
+                  <div>Аналитика за последнию неделю</div>
                 </div>
-                <div>Зарегистрированные пользователи</div>
-              </div>
-              <Dropdown align="end">
-                <DropdownToggle
-                  as="button"
-                  bsPrefix="btn"
-                  className="btn-link rounded-0 text-white shadow-none p-0"
-                  id="dropdown-chart3"
-                >
-                  <FontAwesomeIcon fixedWidth icon={faEllipsisVertical} />
-                </DropdownToggle>
 
-                <DropdownMenu>
-                  <DropdownItem href="#/action-1">Action</DropdownItem>
-                  <DropdownItem href="#/action-2">Another action</DropdownItem>
-                  <DropdownItem href="#/action-3">Something else</DropdownItem>
-                </DropdownMenu>
-              </Dropdown>
-            </CardBody>
-            <div className="mt-3 mx-3" style={{ height: '70px' }}>
-              <ConversionChart />
-            </div>
-          </Card>
+              </CardBody>
+              <div className="mt-3 mx-3" style={{ height: '70px' }}>
+                <ConversionChart data={data} />
+              </div>
+            </Card>
+          </div>
+
         </div>
+
+
+
 
 
       </div>
 
-      <Card className="mb-4">
+      <Card className="mb-4" style={{
+        height: '60vh',
+        marginTop: '40px',
+      }}>
         <CardBody>
           <div className="d-flex justify-content-between">
             <div>
@@ -178,38 +205,41 @@ export default function Page() {
 
           </div>
           <div
-            style={{
-              height: '300px',
-              marginTop: '40px',
-            }}
+
           >
             <TrafficChart />
+
           </div>
+
         </CardBody>
         <CardFooter>
           <div className="row row-cols-1 row-cols-md-5 text-center">
             <div className="col mb-sm-2 mb-0">
               <div className="text-black-50">Попытки DDOS</div>
               <div className="fw-semibold">29.703 пользователей  (40%)</div>
-             
+
             </div>
             <div className="col mb-sm-2 mb-0">
               <div className="text-black-50">Разблокированно пользователей</div>
               <div className="fw-semibold">24.093 пользователей (20%)</div>
-          
+
             </div>
 
             <div className="col mb-sm-2 mb-0 ">
               <div className="text-black-50">Заблокированно пользователей </div>
               <div className="fw-semibold">22.123 пользователей (80%)</div>
-            
+
             </div>
 
           </div>
         </CardFooter>
       </Card>
 
+      <ResponsiveDialog open={open} setOpen={setOpen} title="Загрузить файл" >
+        <FileSelect onChange={handleFileChange} />
+        <Button onClick={handleSave}>Сохранить</Button>
 
+      </ResponsiveDialog>
       {/* <div className="row">
         <div className="col-md-12">
           <Card>
@@ -560,10 +590,7 @@ export default function Page() {
             </CardBody>
           </Card>
         </div>
-        <ResponsiveDialog open={open} setOpen={setOpen} title="Загрузить файл" >
-          <FileSelect onChange={handleFileChange} />
-          <Button onClick={handleSave}>Сохранить</Button>
-           </ResponsiveDialog>
+      
       </div> */}
     </>
   )

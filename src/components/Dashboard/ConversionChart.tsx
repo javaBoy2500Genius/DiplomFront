@@ -12,10 +12,14 @@ import {
   PointElement,
   Tooltip,
 } from 'chart.js'
-
+import { UserLogsWeek } from '@/models/log'
+import { NavItem } from 'react-bootstrap'
+interface ConversionChartProps {
+  data: UserLogsWeek[];
+}
 Chart.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Tooltip, Filler)
 
-export default function ConversionChart() {
+const ConversionChart: React.FC<ConversionChartProps> = ({ data }) => {
   return (
     <Line
       options={{
@@ -45,16 +49,23 @@ export default function ConversionChart() {
           },
         },
       }}
-      data={{
-        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-        datasets: [{
-          label: 'My First dataset',
-          backgroundColor: 'rgba(255,255,255,.2)',
-          borderColor: 'rgba(255,255,255,.55)',
-          data: [78, 81, 80, 45, 34, 12, 40],
-          fill: true,
-        }],
-      }}
+      data={
+        {
+
+          labels: data.map(item => {
+            return item.day + " " + item.ip
+          }),
+          datasets: [{
+
+            backgroundColor: 'rgba(255,255,255,.2)',
+            borderColor: 'rgba(255,255,255,.55)',
+            data: data.map(item => {
+              return item.reqestCount;
+            }),
+            fill: true,
+          }],
+        }}
     />
   )
 }
+export default ConversionChart
